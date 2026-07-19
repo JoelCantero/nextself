@@ -77,7 +77,7 @@ for requirement in "${required_sections[@]}"; do
     fi
 done
 
-placeholder_pattern='NEEDS CLARIFICATION|\[(FEATURE( NAME)?|DATE|YYYYMMDD-HHMMSS-feature-name|Brief Title)\]|:[[:space:]]*\[[^]]+\][[:space:]]*$'
+placeholder_pattern='NEEDS CLARIFICATION|\[(FEATURE( NAME)?|DATE|YYYYMMDD(-HHMMSS)?-feature-name|Brief Title)\]|:[[:space:]]*\[[^]]+\][[:space:]]*$'
 if grep -En "$placeholder_pattern" "${required_files[@]}"; then
     echo "[compliance-check] Resolve all template placeholders before completion." >&2
     exit 1

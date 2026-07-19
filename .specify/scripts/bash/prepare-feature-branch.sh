@@ -21,6 +21,7 @@ set -euo pipefail
 
 JSON_MODE=false
 GIT_BRANCH_NAME="${GIT_BRANCH_NAME:-}"
+SHORT_NAME=""
 BASE_BRANCH="${SPECIFY_BASE_BRANCH:-main}"
 REMOTE="${SPECIFY_REMOTE:-origin}"
 ARGS=()
@@ -35,6 +36,11 @@ while [ $# -gt 0 ]; do
             [ $# -gt 0 ] || { echo "Error: --branch-name requires a value" >&2; exit 1; }
             GIT_BRANCH_NAME="$1"
             ;;
+        --short-name)
+            shift
+            [ $# -gt 0 ] || { echo "Error: --short-name requires a value" >&2; exit 1; }
+            SHORT_NAME="$1"
+            ;;
         --base)
             shift
             [ $# -gt 0 ] || { echo "Error: --base requires a value" >&2; exit 1; }
@@ -46,7 +52,7 @@ while [ $# -gt 0 ]; do
             REMOTE="$1"
             ;;
         --help|-h)
-            echo "Usage: $0 [--json] [--branch-name <name>] [--base <branch>] [--remote <name>] <feature description>"
+            echo "Usage: $0 [--json] [--branch-name <name>] [--short-name <english-name>] [--base <branch>] [--remote <name>] <feature description>"
             echo ""
             echo "Creates a fresh feature branch from <remote>/<base> (default origin/main)."
             echo "Aborts if the working tree has uncommitted changes to tracked files."
@@ -109,19 +115,25 @@ else
         exit 1
     fi
 
-    # Honour feature_numbering from init-options.json (sequential | timestamp).
-    USE_TIMESTAMP=false
+    # Honour feature_numbering from init-options.json (sequential | date).
+    USE_DATE=false
     INIT_OPTS="$REPO_ROOT/.specify/init-options.json"
     if [ -f "$INIT_OPTS" ]; then
         numbering="$(grep -o '"feature_numbering"[[:space:]]*:[[:space:]]*"[^"]*"' "$INIT_OPTS" 2>/dev/null | sed -E 's/.*"([^"]*)"$/\1/' || true)"
-        [ "$numbering" = "timestamp" ] && USE_TIMESTAMP=true
+        [ "$numbering" = "date" ] && USE_DATE=true
     fi
 
+    NAME_ARGS=()
+    [ -n "$SHORT_NAME" ] && NAME_ARGS=(--short-name "$SHORT_NAME")
     # Reuse the canonical name generator without creating any files (--dry-run).
-    if [ "$USE_TIMESTAMP" = true ]; then
-        DRY_OUT="$("$SCRIPT_DIR/create-new-feature.sh" --dry-run --timestamp "$DESCRIPTION")"
+    if [ "$USE_DATE" = true ]; then
+        if [ -z "$SHORT_NAME" ]; then
+            echo "Error: date-based feature naming requires --short-name with a concise English name." >&2
+            exit 1
+        fi
+        DRY_OUT="$("$SCRIPT_DIR/create-new-feature.sh" --dry-run --date "${NAME_ARGS[@]}" "$DESCRIPTION")"
     else
-        DRY_OUT="$("$SCRIPT_DIR/create-new-feature.sh" --dry-run "$DESCRIPTION")"
+        DRY_OUT="$("$SCRIPT_DIR/create-new-feature.sh" --dry-run "${NAME_ARGS[@]}" "$DESCRIPTION")"
     fi
     BRANCH_NAME="$(printf '%s\n' "$DRY_OUT" | awk -F': ' '/^BRANCH_NAME: /{print $2; exit}')"
     FEATURE_NUM="$(printf '%s\n' "$DRY_OUT" | awk -F': ' '/^FEATURE_NUM: /{print $2; exit}')"

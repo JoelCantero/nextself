@@ -169,7 +169,7 @@ switch traffic only after validation; reverting Git does not reverse schema or d
 6. Adapt locales, message catalogs, Auth.js providers, Prisma models, resource limits, retention,
    availability, and monitoring to the derived application's requirements.
 7. Push the initial `main` to `origin`, then start the first real feature through SpecKit. Feature
-   directories use `YYYYMMDD-HHMMSS-feature-name`; the template itself intentionally has no
+  directories use `YYYYMMDD-english-feature-name`; the template itself intentionally has no
    product-specific `specs/` directory.
 8. Before production, run the CI gate, the backup/restore verification workflow, and a deployment
    healthcheck against the actual target environment.

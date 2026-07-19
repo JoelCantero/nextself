@@ -1,6 +1,7 @@
 {
   "ai": "copilot",
-  "feature_numbering": "timestamp",
+  "feature_numbering": "date",
+  "feature_name_language": "en",
   "here": true,
   "integration": "copilot",
   "script": "sh",

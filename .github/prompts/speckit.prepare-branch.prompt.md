@@ -6,17 +6,18 @@ You are running the mandatory `before_specify` hook for `/speckit.specify`.
 Do exactly the following and nothing else:
 
 1. Identify the feature description from the `/speckit.specify` command that
-   triggered this hook. If the user supplied an explicit `GIT_BRANCH_NAME`,
-   note that exact value.
+   triggered this hook. Generate a concise 2-4 word English short name even
+   when the description is written in another language. If the user supplied
+   an explicit `GIT_BRANCH_NAME`, note that exact value.
 
 2. From the repository root, run this terminal command (quote the description):
 
    ```bash
-   .specify/scripts/bash/prepare-feature-branch.sh --json "<feature description>"
+   .specify/scripts/bash/prepare-feature-branch.sh --json --short-name "<english-short-name>" "<feature description>"
    ```
 
-   - If an explicit branch name was provided, pass
-     `--branch-name "<value>"` instead of relying on the description.
+    - If an explicit branch name was provided, pass
+       `--branch-name "<value>"` instead of `--short-name`.
 
 3. Check the exit code:
    - **Non-zero exit** (for example: uncommitted changes, or `origin/main`

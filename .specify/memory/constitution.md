@@ -1,8 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.6.1 → 1.6.2 (clarification)
-Ratified: 2026-07-10 | Last amended: 2026-07-14
+Version change: 1.7.0 → 1.8.0 (mandatory accessibility principle)
+Ratified: 2026-07-10 | Last amended: 2026-07-15
+
+1.8.0 — Added Principle XIII, requiring all user-facing interfaces and flows to conform to WCAG
+2.2 Level AA across supported locales, viewports, and interaction states, with explicit acceptance
+criteria and automated plus manual accessibility verification.
+
+1.7.0 — Changed feature identifiers to `YYYYMMDD-english-feature-name`: date-only prefixes improve
+readability, and English short names keep branches and directories consistent across multilingual
+feature descriptions.
 
 1.6.2 — Clarified that the template's reference deployment targets a self-hosted ARM64 Raspberry
 Pi while derived applications may select another Docker-compatible host without weakening the
@@ -51,7 +59,7 @@ locally or in CI; the deploy pipeline handles build + deploy).
 Architecture: default layer-based structure; grow into feature modules; shared stays shared.
 1.0.0 — Initial ratification of the principles and sections listed below.
 
-Principle set (template's 5 generic placeholders → 12 concrete principles):
+Principle set (template's 5 generic placeholders → 13 concrete principles):
   I.    Docker-First, Portable by Default
   II.   Separate by Operational Responsibility, Not by Artificial Layers
   III.  Reverse Proxy and Network Isolation Are Mandatory
@@ -64,6 +72,7 @@ Principle set (template's 5 generic placeholders → 12 concrete principles):
   X.    Security by Default
   XI.   Specs Before Implementation
   XII.  Tests and Verification Are Required
+  XIII. Accessibility Is a Release Requirement
 
 Added sections:
   - Purpose
@@ -367,8 +376,10 @@ the root cause of most authorization vulnerabilities.
 
 Every meaningful feature MUST start with a specification.
 
-Feature directories and branches MUST use the configured timestamp identifier format
-`YYYYMMDD-HHMMSS-feature-name` so parallel specification work cannot collide.
+Feature directories and branches MUST use the configured date identifier format
+`YYYYMMDD-english-feature-name`. The 2-4 word feature suffix MUST be English regardless of the
+language used in the feature request. Features created on the same day MUST use distinct,
+descriptive suffixes.
 
 The specification MUST describe: the user problem; the expected behavior; the users or roles
 involved; acceptance criteria; non-goals; edge cases; security or privacy implications; and
@@ -408,6 +419,33 @@ tests alone are insufficient.
 
 **Rationale**: Verification is what converts "it works on my machine" into a claim that can survive
 deployment to constrained, unattended infrastructure.
+
+### XIII. Accessibility Is a Release Requirement
+
+All user-facing interfaces and flows MUST conform to WCAG 2.2 Level AA before production release.
+Compliance applies to every supported locale, responsive viewport, input method, and interaction
+state, including loading, empty, validation, error, success, and disabled states.
+
+Required:
+
+- Use semantic structure, programmatic labels, meaningful names, and appropriate status
+  announcements for assistive technologies.
+- Support complete keyboard operation with logical focus order, visible focus, and no focus traps.
+- Meet Level AA requirements for contrast, text resizing, reflow, target size, and motion.
+- Associate validation errors and instructions with their controls without relying only on color,
+  position, sound, or visual styling.
+- Preserve accessibility when content is translated or layouts change across supported locales.
+- Define testable accessibility acceptance criteria in every specification that changes a
+  user-facing interface.
+- Include automated accessibility checks and repeatable manual keyboard verification. Critical
+  public flows MUST also be verified with representative assistive technology before release.
+
+Third-party components that cannot fully conform MUST be documented in the implementation plan
+with their impact, a usable accessible alternative or mitigation, and a tracked remediation path.
+
+**Rationale**: Accessibility is a product requirement and release criterion, not optional polish;
+people must be able to complete the same essential workflows regardless of disability, input
+method, language, or viewport.
 
 ## Standard Project Architecture
 
@@ -588,4 +626,4 @@ equivalent, documented exception).
 **Scope**: Self-hosted Docker web applications for Raspberry Pi, VPS, and small production
 deployments.
 
-**Version**: 1.6.2 | **Ratified**: 2026-07-10 | **Last Amended**: 2026-07-14
+**Version**: 1.8.0 | **Ratified**: 2026-07-10 | **Last Amended**: 2026-07-15
